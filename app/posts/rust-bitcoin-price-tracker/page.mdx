@@ -1,0 +1,89 @@
+import { AnimatedName } from '../animated-name.tsx';
+import { ROUTES } from '../../lib/constants';
+
+export const metadata = {
+  title: 'Learning Rust by Building a Bitcoin Price Tracker',
+  alternates: {
+    canonical: `${ROUTES.POSTS}/rust-bitcoin-price-tracker`,
+  },
+};
+
+# Learning Rust by Building a Bitcoin Price Tracker
+
+<AnimatedName />
+
+I'm learning Rust and tinkering with Raspberry Pis. So I figured I'd merge the two and create a home server that runs the Bitcoin Tracker program indefinitely.
+
+<blockquote className="aside">
+👋🏽 Howdy! Just want to some read code? Here's the [GitHub Repo](https://github.com/software-trizzey/btc_tracker).
+</blockquote>
+
+## **Overview**
+
+I built a simple Rust project that fetches the latest Bitcoin price (in USD) from the [CoinMarket Cap](https://coinmarketcap.com/) API every 30 minutes and stores it in an SQLite database. If the price hits my buying criteria, the program sends me a notification via Discord.
+
+## Motivation
+
+I'm learning Rust and thought it would be fun to build something useful while getting to know the language. I've also been tinkering with Raspberry Pis recently, so I figured I'd merge the two and create a home server that runs the Bitcoin Tracker program indefinitely.
+
+## **Hurdles I Overcame**
+
+### **1. Async Rust: A Bit of a Pain**
+
+Working with async Rust was definitely a challenge. Compared to languages like Go, Python, or JavaScript, it feels a little more difficult to get the hang of. But it's a learning experience, and I'm getting better at it!
+
+### **2. Cross-compiling on my M1 Mac**
+
+I ran into a few roadblocks when trying to cross-compile the Rust program on my M1 Mac and transfer the binary to my Raspberry Pi 4. Here's what happened:
+
+- **The target architecture issue:** I needed to compile the program for the **`armv7-unknown-linux-gnueabihf`** target to match the Pi's architecture.
+    - **Problem:** I got the error **`mac error: failed to run custom build command for openssl-sys v0.9.104`**.
+    - **Solution:** I had to add the **`openssl`** crate directly to my project and use the **`cross-rs`** crate to build it.
+
+Command that resolved openssl issue:
+
+```bash
+cross build --release --target armv7-unknown-linux-gnueabihf
+```
+
+- After a bit of trial and error, I successfully compiled the program on my Mac and transferred the binary to the Pi using the **`scp`** CLI tool. But there was still an issue:
+    - **Problem:** When I tried to run the program on the Pi, I got the error:**`./btc_tracker: /lib/arm-linux-gnueabihf/libm.so.6: version GLIBC_2.29' not found`**.
+    - **Solution:** The Rust version I used to build the project was newer than what the Pi OS supported (**`2.28`**). So, I scrapped the cross-compilation and decided to just build the binary directly on the Pi.
+
+### **3. Compiling Directly on the Pi**
+
+To make this work, I installed Rust directly on the Pi, cloned the project from my Git repo, and ran the build command:
+
+```bash
+cargo build --release
+```
+
+That worked fine, and I could finally compile the project directly on the Pi.
+
+### **4. Keeping the Program Running**
+
+To ensure the program keeps running even after I close the SSH session, I used **`nohup`** to run it in the background. The command was:
+
+```bash
+nohup ./target/release/btc_tracker > output.log 2>&1 &
+```
+
+This starts the program, redirects output to a log file, and gives me the process ID to manage it later. To stop the program, I can run:
+
+```bash
+pgrep -f "btc_tracker"
+kill -9 <process_id>
+```
+
+If I wanted to get fancy, I could set up a **systemd** service to run the program as a daemon, but this was just a side project, so I went with the quick and dirty solution.
+
+## **Future Ideas**
+
+- I plan to improve the program by adding an option to configuration the notifications. Perhaps create more detailed messages or and support platforms other than Discord.
+- Add a minimum sell price that sends an alternate message?
+
+## Wrapping up
+
+This project has been a fun way to learn Rust while also integrating a useful API and deploying it on a Raspberry Pi. The process of troubleshooting compilation issues, working with async Rust, and getting the program running on a Pi has been challenging but rewarding. For the moment, I’m putting the project on ice and moving onto something else. However, I’m looking forward to continuing to expand on the current version as I get more comfortable with Rust!
+
+Feel free to check out the code on [GitHub](https://github.com/software-trizzey/btc_tracker).

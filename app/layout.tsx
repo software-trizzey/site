@@ -42,7 +42,7 @@ export default function RootLayout({
 
 function Footer() {
   const links = [
-    { name: '@softwareTrizzey', url: 'https://x.com/softwareTrizzey' },
+    { name: '@softwaretrizzey', url: 'https://x.com/softwaretrizzey' },
     // { name: 'youtube', url: 'https://www.youtube.com/@leerob' }, TODO: uncomment when I have a youtube channel
     { name: 'linkedin', url: 'https://www.linkedin.com/in/software-trizzey' },
     { name: 'github', url: 'https://github.com/software-trizzey' },

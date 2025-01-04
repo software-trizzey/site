@@ -183,3 +183,17 @@ table {
     opacity: 0;
   }
 }
+
+blockquote.aside {
+  background-color: #f8fafc;
+  border-left: 4px solid #e2e8f0;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 0.375rem;
+}
+
+blockquote.aside p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
