@@ -1,6 +1,6 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fleerob%2Fsite)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsoftware-trizzey%2Fsite)
 
-# site
+# tristandeane.ca
 
 - **Framework**: [Next.js](https://nextjs.org/)
 - **Database**: [Postgres](https://vercel.com/postgres)
@@ -12,8 +12,10 @@
 
 This application requires Node.js v18.17+.
 
+Ensure you have [bun installed](https://bun.sh/docs/installation).
+
 ```bash
-git clone https://github.com/leerob/site.git
+git clone https://github.com/software-trizzey/site.git
 cd site
 bun install
 bun run delete # Remove all of my notes
@@ -34,6 +36,8 @@ CREATE TABLE redirects (
 ```
 
 ## License
+
+This site builds on the work of Lee Rob's [website](https://github.com/leerob/site), and I'm grateful for the inspiration.
 
 1. You are free to use this code as inspiration.
 2. Please do not copy it directly.
