@@ -1,5 +1,5 @@
 export const ROUTES = {
   POSTS: '/posts',
+  PROJECTS: '/projects',
   WORK: '/work',
-  NOTES: '/n',
 } as const; 

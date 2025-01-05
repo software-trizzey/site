@@ -1,0 +1,48 @@
+import { AnimatedName } from '../../posts/animated-name.tsx';
+import { ROUTES } from '../../lib/constants';
+
+export const metadata = {
+  title: 'Djangoly: Write Cleaner, Faster, Scalable Django Code',
+  alternates: {
+    canonical: `${ROUTES.POSTS}/projects/djangoly`,
+  },
+};
+
+# Djangoly: Write Cleaner, Faster, Scalable Django Code
+
+<AnimatedName />
+
+<blockquote className="aside">
+🔧 Want to check out the code? Here's the [GitHub Repo](https://github.com/software-trizzey/djangoly-vscode).
+</blockquote>
+
+## What is Djangoly?
+
+Djangoly is an IDE extension I built to help development teams maintain high-quality Django codebases. It automates the enforcement of Django best practices, runs security checks, and ensures consistent code conventions across projects.
+
+## Why Build It?
+
+While working on large Django applications, I noticed our team spending significant time on code reviews catching the same issues:
+- Inconsistent variable names and project structure
+- Missing security configurations
+- Non-optimal database queries
+- Overlooked Django-specific best practices
+
+Rather than repeatedly documenting these issues, I created Djangoly to automate these checks and provide immediate feedback to developers.
+
+## Key Features
+
+- **Automated Linting**: Custom Django-specific linting rules
+- **Security Scanning**: Checks for common Django security misconfigurations
+- **Performance Analysis**: Identifies potential database query optimizations
+- **Convention Enforcement**: Ensures consistent project structure and naming
+- **CI/CD Integration**: Seamlessly integrates with popular CI/CD pipelines
+
+## Supported IDEs
+
+- [VSCode](https://code.visualstudio.com/)
+- [Cursor](https://www.cursor.com/)
+
+## Impact
+
+While still in beta,Djangoly has significantly reduced our code review cycles and helped maintain consistent quality across our Django projects. It serves as both a learning tool for junior developers and a safety net for experienced ones.
