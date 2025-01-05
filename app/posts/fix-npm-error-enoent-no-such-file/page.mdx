@@ -1,0 +1,89 @@
+import { AnimatedName } from '../animated-name.tsx';
+import { ROUTES } from '../../lib/constants';
+
+export const metadata = {
+  title: 'Fixing npm error: ENOENT: no such file or directory',
+  alternates: {
+    canonical: `${ROUTES.POSTS}/fix-npm-error-enoent-no-such-file`,
+  },
+};
+
+# How to fix: npm ERR! enoent ENOENT: no such file or directory, rename
+
+<AnimatedName />
+
+I was working on a project where I needed to update some of our package versions. After upgrading some of our package versions, I committed the changes to our CI/CD. The build passed; the code was reviewed and committed into our repository.
+
+After upgrading some of our package versions, I committed the changes to our CI/CD. The build passed; the code was reviewed and committed into our repository.
+
+Easy Peasy!
+Or so I thought.
+
+Being the diligent developer I am (i.e., I've been burned before), I double-checked that everything was working as intended before logging off for the evening.
+
+After switching to our development branch, I pulled in the latest changes and attempted to rebuild the frontend docker image using `docker-compose build fe --no-cache` .
+
+It was at this point that the image failed to build. The issue?
+
+```bash
+ **npm ERR! enoent ENOENT: no such file or directory, rename...**
+```
+
+What the **** does that mean?
+
+Don't you just love getting random build errors right before you're about to log off?
+
+What was strange about this one was that the build had passed locally on the other branch **and** ran through our CI/CD with no apparent issue.
+
+At first, I thought I failed to commit the updated package.lock.json file, but when I reviewed the pull request, the new file was right where it was supposed to be.
+
+Very strange indeed.
+
+Although I couldn't find the cause, as I mentioned earlier, the ticket I was working on involved updating some of our packages, and I suspect the bug was related to a nested dependency.
+
+After more expert triaging (i.e., running to Google in a blind panic), I found that these errors usually occurred due to an outdated `node_modules` folder or `package.lock.json`.
+
+Armed with this data point, I commenced with the bug stompin'.
+
+## Solution:
+
+It actually took a few attempts before I found a workable solution.
+
+### Step 1:
+
+If you haven't already, open up a terminal in the root of your project and run the following:
+
+```bash
+rm -rf node_modules && package-lock.json
+```
+
+### Step 2:
+
+Assuming step one was successful, we can now reinstall the project dependencies with:
+
+```bash
+npm install
+```
+
+*Note: if you're using another package manager be sure to substitute your command (ie. `yarn install` )*
+
+### Step 3:
+
+Finally, to create our docker image we copy `package.json` and `package-lock.json` files into the container and then run the install command.
+
+For us this looks something like:
+
+```docker
+# fe.Dockerfile
+...
+COPY package.json package-lock.json
+RUN npm install
+```
+
+After a silent prayer to the DevOps gods, the image built without issue.
+
+**Success!**
+
+Also, incase anyone @'s me, I'm sure there are other ways to solve this issue, but this is what worked for me while under the gun on a Thursday night.
+
+Good luck friend.

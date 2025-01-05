@@ -1,0 +1,111 @@
+import { AnimatedName } from '../animated-name.tsx';
+import { ROUTES } from '../../lib/constants';
+
+export const metadata = {
+  title: 'Getting Client IP in Django and Heroku',
+  alternates: {
+    canonical: `${ROUTES.POSTS}/getting-client-ip-in-django-and-heroku`,
+  },
+};
+
+# Getting a Client's IP Address in Django and Heroku
+
+<AnimatedName />
+
+We use the [django-hijack](https://django-hijack.readthedocs.io/en/v2.1.10/) library at work for logging in as a user to troubleshoot errors they encounter while using our application. As you can imagine, this library is handy for triaging issues related to a specific account. However, this also opens the door for various mishaps and permission problems.
+
+Picture someone hijacking a user and accidentally deleting a critical piece of data that can't be restored. With our current approach, it would appear to be the user's fault when it was actually our own. 
+
+Not ideal.
+
+## Feature Scope
+
+To improve the audibility of this feature, we've decided to begin tracking when someone hijacks a user's account. Among other things, our criteria included grabbing the current client's IP address.
+
+As the developer assigned this task, I gathered the necessary context from the powers that be and began planning my attack.
+
+As it turns out, `django-hijack` offers some useful signals that we can utilize to monitor hijacking activities. These listeners proved ideal for capturing and logging the client's IP address.
+
+## A Naive Solution
+
+After some quick clickity-clacking, I had a solution:
+
+```python
+from django.contrib.admin.models import LogEntry
+
+@receiver(hijack_started)
+def log_hijack_started(sender, hijacker_id, hijacked_id, request, **kwargs):
+    timestamp = timezone.now()
+    ip_address = request.META.get("REMOTE_ADDR")
+
+    LogEntry.objects.log_action(
+        user_id=hijacker_id,
+        content_type_id=ContentType.objects.get_for_model(request.user).pk,
+        object_id=hijacked_id,
+        object_repr=f"User IP: {ip_address}",
+        action_flag=CHANGE,
+        change_message=f"[{timestamp}] Hijack session started",
+    )
+```
+
+After verifying that it worked on my computer, I was ready to fast-track it to production!
+
+Just kidding.
+
+Even though we're a startup, we've long since outlawed this type of cowboy-coding behaviour after taking down production one too many times.
+
+In fact, we have a staging environment that is perfect for testing our code before sending it out into the wild. And i'm glad it exists because I soon learned that my code didn't work!
+
+If you're familiar with Heroku, you might've caught my earlier mistake.
+
+## Afternoon Troubleshoot
+
+By this point it was getting late in the afternoon and I was in no mood for surprises.
+
+With the clock ticking, it was time to lean on my faithful companion Google in the hopes that someone else had encountered this bramble.
+
+After a brief search, I learned that Heroku's router proxy's all of their requests. Which is in stark contrast to our local setup where our app connects directly to the server. This difference in network architecture explains why `REMOTE_ADDR` field was empty when I tried to access it.
+
+Eventually I found their [docs](https://devcenter.heroku.com/articles/http-routing#heroku-headers) which highlight the correct header:
+
+> • `X-Forwarded-For`: the originating IP address of the client connecting to the Heroku router
+> 
+
+Bolstered by this lead, I refactored my code to handle the additional header:
+
+```python
+def get_client_ip(request):
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        # X_FORWARDED_FOR returns client1, proxy1, proxy2,...
+        ip = x_forwarded_for.split(",")[0]
+    else:
+        ip = request.META.get("REMOTE_ADDR")
+    return ip
+
+@receiver(hijack_started)
+def log_hijack_started(sender, hijacker_id, hijacked_id, request, **kwargs):
+    timestamp = timezone.now()
+
+    ip_address = get_client_ip(request)		
+	...
+```
+
+Satisfied with my latest solution, I redeployed the branch to staging and found that not only was the IP address showing up, it matched my device's public address.
+
+Success!
+
+<blockquote className="aside">
+⚠️ **Warning:**
+
+This solution isn't exactly safe. A bad actor could very easily pass an incorrect address via [IP spoofing](https://www.cloudflare.com/learning/ddos/glossary/ip-spoofing/) or a VPN.
+
+However, as this will be an internal tool meant to monitor authenticated admin actions, we believe this is fine for our use case. 
+
+If you have higher security concerns, you may want to consider a library like [django-ipware](https://www.notion.so/Inviting-a-guest-that-isn-t-on-guest-list-doesn-t-work-10117d7d138e47a7840d6131d579bff3?pvs=21).
+
+</blockquote>
+
+## Wrapping up
+
+The main takeaway here is to remember that Heroku proxy's their client requests. So if they're hosting your Django, Node.js or Go application, you'll want to use the `X-Forwarded-For` request header when when retrieving a client's IP address.

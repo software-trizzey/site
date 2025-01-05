@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     default: 'Tristan Deane',
     template: '%s | Tristan Deane',
   },
-  description: 'Frontend developer, optimist, community builder.',
+  description: 'Software Engineer, hacker, and most recently, a proud father.',
 };
 
 export default function RootLayout({

@@ -98,14 +98,14 @@ table {
 }
 
 .transition-element {
-  view-transition-name: lee;
+  view-transition-name: tristan;
 }
 
-::view-transition-old(lee) {
+::view-transition-old(tristan) {
   animation: fade-out 0.8s ease-in-out;
 }
 
-::view-transition-new(lee) {
+::view-transition-new(tristan) {
   animation: fade-in-up 0.4s ease-in-out;
 }
 
