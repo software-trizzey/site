@@ -27,7 +27,7 @@ export default async function sitemap() {
     lastModified: new Date().toISOString(),
   }));
 
-  const routes = ['', '/work'].map((route) => ({
+  const routes = ['', '/work', '/projects'].map((route) => ({
     url: `https://tristandeane${route}`,
     lastModified: new Date().toISOString(),
   }));
