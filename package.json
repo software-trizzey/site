@@ -1,5 +1,14 @@
 {
   "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=25.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -7,24 +16,24 @@
     "delete": "rm -rf app/n"
   },
   "dependencies": {
-    "@next/mdx": "15.1.2",
-    "@tailwindcss/postcss": "^4.0.0-beta.8",
+    "@next/mdx": "16.1.6",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/mdx": "^2.0.13",
-    "@vercel/analytics": "^1.4.1",
-    "framer-motion": "^11.15.0",
-    "next": "^15.1.2",
-    "next-view-transitions": "^0.3.4",
-    "postgres": "^3.4.5",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "sugar-high": "^0.7.5"
+    "@vercel/analytics": "^1.6.1",
+    "framer-motion": "^12.34.0",
+    "next": "^16.1.6",
+    "next-view-transitions": "^0.3.5",
+    "postgres": "^3.4.8",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sugar-high": "^0.9.5"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^4.0.0-beta.8",
-    "typescript": "^5.7.2"
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3"
   }
 }

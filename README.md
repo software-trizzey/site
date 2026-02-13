@@ -10,16 +10,16 @@
 
 ## Running Locally
 
-This application requires Node.js v18.17+.
+This application requires Node.js v25+ (Next.js minimum is v20.9.0).
 
-Ensure you have [bun installed](https://bun.sh/docs/installation).
+Ensure you have [pnpm installed](https://pnpm.io/installation).
 
 ```bash
 git clone https://github.com/software-trizzey/site.git
 cd site
-bun install
-bun run delete # Remove all of my notes
-bun dev
+pnpm install
+pnpm run delete # Remove all of my notes
+pnpm dev
 ```
 
 Optional: Create a `.env.local` file with your `POSTGRES_URL` environment variable to store redirects.
@@ -43,4 +43,4 @@ This site builds on the work of Lee Rob's [website](https://github.com/leerob/si
 2. Please do not copy it directly.
 3. Crediting the author is appreciated.
 
-Please remove all of my personal information by running `bun run delete`.
+Please remove all of my personal information by running `pnpm run delete`.
