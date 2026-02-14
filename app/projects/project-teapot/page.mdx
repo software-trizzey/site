@@ -1,0 +1,58 @@
+import { AnimatedName } from '../../posts/animated-name.tsx';
+import { ROUTES } from '../../lib/constants';
+
+export const metadata = {
+  title: 'Project Teapot: An Interactive Resume Scanner Experience',
+  alternates: {
+    canonical: `${ROUTES.PROJECTS}/project-teapot`,
+  },
+};
+
+# Project Teapot: An Interactive Resume Scanner Experience
+
+<AnimatedName />
+
+<blockquote className="aside">
+Live demo: [teapot.tristandeane.ca](https://teapot.tristandeane.ca)  
+Source code: [github.com/software-trizzey/project-teapot](https://github.com/software-trizzey/project-teapot)
+</blockquote>
+
+## What is Project Teapot?
+
+Project Teapot is a playful, interactive resume scanner experience inspired by [shop.merchant.dev](https://shop.merchant.dev/). I built it out of curiosity after seeing the site make the rounds on X and realizing there was no public repository to learn from.
+
+That sent me down a reverse-engineering rabbit hole of browser source inspection and network request analysis, followed by rebuilding the experience in my own style.
+
+## Why Build It?
+
+I wanted to sharpen my ability to break down polished frontend experiences and reproduce them from observation, then push the concept further with my own UX ideas.
+
+The hard parts were mostly animation workflow and compositing:
+
+- Generated clips were inconsistent across tools and prompts
+- I had to solve aspect ratio and framing mismatches to blend clips over a static background
+- I wrote an `ffmpeg` bash script to normalize renders into a consistent format
+- I started with RunwayML, then switched to Veo 3.1 via the Gemini API, which produced much better first-pass results
+
+## Core UX Loop
+
+1. Visitor enters the scene
+2. Robot greets them
+3. Visitor explores hotspots
+4. Resume scanner draws attention
+5. Visitor uploads a resume or picks a sample
+6. Scan runs and returns feedback with humor + insights
+7. Visitor shares or tries another resume
+
+## Resume Scan Flow
+
+- User clicks **Scan Resume**
+- Modal asks them to choose **Upload Resume** or **Use Sample Resume**
+- Upload path shows a disclosure that a third-party platform is used for analysis and no resume/result data is stored by the app after upload
+- User must explicitly agree before continuing to `.pdf`/`.docx` upload (including drag-and-drop on desktop)
+- If they do not agree, they can continue with themed sample resumes backed by JSON
+- After either path is selected, scan animation plays and results are displayed in a dialog
+
+## What's Next
+
+Project Teapot is development-complete at this point. I set out to recreate and extend the experience I had in mind, and this version delivers on that initial vision.
