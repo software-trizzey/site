@@ -19,20 +19,20 @@ Source code: [github.com/software-trizzey/project-teapot](https://github.com/sof
 
 ## What is Project Teapot?
 
-Project Teapot is a playful, interactive resume scanner experience inspired by [shop.merchant.dev](https://shop.merchant.dev/). I built it out of curiosity after seeing the site make the rounds on X and realizing there was no public repository to learn from.
+Project Teapot is a playful, interactive resume scanner inspired by [shop.merchant.dev](https://shop.merchant.dev/). I built it after seeing the site all over X and finding no public repo to learn from.
 
-That sent me down a reverse-engineering rabbit hole of browser source inspection and network request analysis, followed by rebuilding the experience in my own style.
+So I reverse-engineered the flow through source inspection and network tracing, then rebuilt it in my own style.
 
 ## Why Build It?
 
-I wanted to sharpen my ability to break down polished frontend experiences and reproduce them from observation, then push the concept further with my own UX ideas.
+I wanted to get better at breaking down polished frontend experiences, rebuilding them from observation, and then pushing the concept with my own UX ideas.
 
 The hard parts were mostly animation workflow and compositing:
 
 - Generated clips were inconsistent across tools and prompts
-- I had to solve aspect ratio and framing mismatches to blend clips over a static background
-- I wrote an `ffmpeg` bash script to normalize renders into a consistent format
-- I started with RunwayML, then switched to Veo 3.1 via the Gemini API, which produced much better first-pass results
+- Aspect ratio and framing mismatches made compositing tricky
+- I wrote an `ffmpeg` script to normalize renders into one format
+- I started with RunwayML, then moved to Veo 3.1 via the Gemini API for better first-pass output
 
 ## Core UX Loop
 
@@ -44,15 +44,18 @@ The hard parts were mostly animation workflow and compositing:
 6. Scan runs and returns feedback with humor + insights
 7. Visitor shares or tries another resume
 
-## Resume Scan Flow
 
-- User clicks **Scan Resume**
-- Modal asks them to choose **Upload Resume** or **Use Sample Resume**
-- Upload path shows a disclosure that a third-party platform is used for analysis and no resume/result data is stored by the app after upload
-- User must explicitly agree before continuing to `.pdf`/`.docx` upload (including drag-and-drop on desktop)
-- If they do not agree, they can continue with themed sample resumes backed by JSON
-- After either path is selected, scan animation plays and results are displayed in a dialog
+## Processing Resumes
+I wanted real uploads, while keeping everything local. `.docx` parsing uses mammothjs (https://github.com/mwilliamson/mammoth.js), and PDFs are parsed in a web worker with PDF.js (https://github.com/mozilla/pdf.js) so the UI stays responsive.
+
+After parsing, resumes go through a simple rule-based scorecard. Example: experience is +8, skills is +4, email is +2, and missing email is -20 (yes, intentionally brutal). I also score for impact signals like leadership, KPIs, and measurable outcomes.
+
+The output is a score out of 100, a band (`weak | medium | strong`), and a confidence score.
+
+It is intentionally deterministic and transparent. Every point has a reason. This is not a production ATS, just a playful baseline I can keep tuning**.**
+
+By the way, you should try the chaos resume.
 
 ## What's Next
 
-Project Teapot is development-complete at this point. I set out to recreate and extend the experience I had in mind, and this version delivers on that initial vision.
+Project Teapot is development-complete. I set out to recreate and extend a specific experience, and this version delivers on that goal.
