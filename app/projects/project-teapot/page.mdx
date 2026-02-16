@@ -1,20 +1,37 @@
 import { AnimatedName } from '../../posts/animated-name.tsx';
 import { ROUTES } from '../../lib/constants';
+import { GitHubLink } from '../github-link';
+import Image from 'next/image';
 
 export const metadata = {
-  title: 'Project Teapot: An Interactive Resume Scanner Experience',
+  title: 'Project Teapot: A Reimagined Resume Experience',
   alternates: {
     canonical: `${ROUTES.PROJECTS}/project-teapot`,
   },
 };
 
-# Project Teapot: An Interactive Resume Scanner Experience
+# Project Teapot: A Reimagined Resume Review Experience
 
 <AnimatedName />
 
+<a
+  href="https://teapot.tristandeane.ca"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="group block overflow-hidden rounded-md"
+>
+  <Image
+    src="https://raw.githubusercontent.com/software-trizzey/project-teapot/main/public/scene-bg.png"
+    alt="Project Teapot scene background"
+    width={1280}
+    height={720}
+    className="w-full h-auto transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+  />
+</a>
+
 <blockquote className="aside">
 Live demo: [teapot.tristandeane.ca](https://teapot.tristandeane.ca)  
-Source code: [github.com/software-trizzey/project-teapot](https://github.com/software-trizzey/project-teapot)
+Source code: <GitHubLink href="https://github.com/software-trizzey/project-teapot">github.com/software-trizzey/project-teapot</GitHubLink>
 </blockquote>
 
 ## What is Project Teapot?
@@ -27,7 +44,7 @@ So I reverse-engineered the flow through source inspection and network tracing, 
 
 I wanted to get better at breaking down polished frontend experiences, rebuilding them from observation, and then pushing the concept with my own UX ideas.
 
-The hard parts were mostly animation workflow and compositing:
+The hard parts were mostly animation workflow and compositing. This included things like:
 
 - Generated clips were inconsistent across tools and prompts
 - Aspect ratio and framing mismatches made compositing tricky
@@ -37,25 +54,23 @@ The hard parts were mostly animation workflow and compositing:
 ## Core UX Loop
 
 1. Visitor enters the scene
-2. Robot greets them
-3. Visitor explores hotspots
-4. Resume scanner draws attention
-5. Visitor uploads a resume or picks a sample
-6. Scan runs and returns feedback with humor + insights
-7. Visitor shares or tries another resume
+2. HR-418 Robots greets them
+3. Visitor can click the resume scanner or menu to open the dialog tree
+4. Visitor uploads a resume or picks a sample
+5. Scan runs and returns feedback with insights
+6. Visitor can then exit or retry another resume
 
 
 ## Processing Resumes
-I wanted real uploads, while keeping everything local. `.docx` parsing uses mammothjs (https://github.com/mwilliamson/mammoth.js), and PDFs are parsed in a web worker with PDF.js (https://github.com/mozilla/pdf.js) so the UI stays responsive.
+I wanted real uploads, while keeping everything local to the browser. `.docx` parsing uses [mammothjs](https://github.com/mwilliamson/mammoth.js), and `.pdf` files are parsed in a web worker with [PDF.js](https://github.com/mozilla/pdf.js) so the UI stays responsive.
 
 After parsing, resumes go through a simple rule-based scorecard. Example: experience is +8, skills is +4, email is +2, and missing email is -20 (yes, intentionally brutal). I also score for impact signals like leadership, KPIs, and measurable outcomes.
 
-The output is a score out of 100, a band (`weak | medium | strong`), and a confidence score.
+The output is totaled out of 100, categorized as `weak | medium | strong`, and assigned a confidence score.
 
-It is intentionally deterministic and transparent. Every point has a reason. This is not a production ATS, just a playful baseline I can keep tuning**.**
+It is intentionally deterministic and transparent. This is not a production ATS, just a playful baseline for demo purposes.
 
-By the way, you should try the chaos resume.
 
 ## What's Next
 
-Project Teapot is development-complete. I set out to recreate and extend a specific experience, and this version delivers on that goal.
+Project Teapot is dev complete. I set out to recreate and extend a specific experience, and this version delivers on that goal.

@@ -8,6 +8,15 @@ export const sql = postgres(process.env.POSTGRES_URL!, {
 
 const nextConfig: NextConfig = {
   pageExtensions: ['mdx', 'ts', 'tsx'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '/software-trizzey/project-teapot/main/public/**',
+      },
+    ],
+  },
   async redirects() {
     if (!process.env.POSTGRES_URL) {
       return [];
